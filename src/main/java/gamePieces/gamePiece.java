@@ -2,7 +2,9 @@ package gamePieces;
 
 import boardGame.boardModel;
 
-import javax.swing.text.html.ImageView;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+
 import java.util.ArrayList;
 
 public abstract class gamePiece {
@@ -13,6 +15,8 @@ public abstract class gamePiece {
 
     public ImageView image;
 
+    public boolean color;
+
     public gamePiece(boardModel model, Coordinates initCoor) {
         this.model = model;
         this.currentPos = initCoor;
@@ -22,8 +26,13 @@ public abstract class gamePiece {
         return currentPos;
     }
 
+    public void setCurrentPos(Coordinates currentPos) {
+        this.currentPos = currentPos;
+    }
+
     public void setImage(ImageView image) {
         this.image = image;
+
     }
 
     abstract ArrayList<Coordinates> getAvailableMoves();

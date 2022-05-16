@@ -1,12 +1,16 @@
 package boardGame;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
+import java.util.Objects;
 
 public class boardView extends Application {
 
@@ -29,7 +33,8 @@ public class boardView extends Application {
         GridPane board = new GridPane();
 
         // Make & set the background
-        BackgroundImage image = new BackgroundImage(new Image(getClass().getResource("/Resources/board.png").toExternalForm()),
+        BackgroundImage image = new BackgroundImage(new Image(Objects.requireNonNull(getClass().getResource(
+                "/Resources/board.png")).toExternalForm()),
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER, new BackgroundSize(740, 740, false, false, true, false));
 
@@ -46,28 +51,46 @@ public class boardView extends Application {
         board.setPadding(new Insets(0, 0, 0, 7));
 
         // Put pieces on board in initial positions
-        board.add(new ImageView(getClass().getResource("/Resources/blackPieces/blackRook.png").toExternalForm()), 0, 0);
-        board.add(new ImageView(getClass().getResource("/Resources/blackPieces/blackKhight.png").toExternalForm()), 1, 0);
-        board.add(new ImageView(getClass().getResource("/Resources/blackPieces/blackBishop.png").toExternalForm()), 2, 0);
-        board.add(new ImageView(getClass().getResource("/Resources/blackPieces/blackQueen.png").toExternalForm()), 3, 0);
-        board.add(new ImageView(getClass().getResource("/Resources/blackPieces/blackKing.png").toExternalForm()), 4, 0);
-        board.add(new ImageView(getClass().getResource("/Resources/blackPieces/blackBishop.png").toExternalForm()), 5, 0);
-        board.add(new ImageView(getClass().getResource("/Resources/blackPieces/blackKhight.png").toExternalForm()), 6, 0);
-        board.add(new ImageView(getClass().getResource("/Resources/blackpieces/blackRook.png").toExternalForm()), 7, 0);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/blackPieces/blackRook.png")).toExternalForm()), 0, 0);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/blackPieces/blackKhight.png")).toExternalForm()), 1, 0);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/blackPieces/blackBishop.png")).toExternalForm()), 2, 0);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/blackPieces/blackQueen.png")).toExternalForm()), 3, 0);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/blackPieces/blackKing.png")).toExternalForm()), 4, 0);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/blackPieces/blackBishop.png")).toExternalForm()), 5, 0);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/blackPieces/blackKhight.png")).toExternalForm()), 6, 0);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/blackpieces/blackRook.png")).toExternalForm()), 7, 0);
         for (int i = 0; i < 8; i++) {
-            board.add(new ImageView(getClass().getResource("/Resources/blackPieces/blackPawn.png").toExternalForm()), i, 1);
+            board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                    "/Resources/blackPieces/blackPawn.png")).toExternalForm()), i, 1);
         }
         for (int i = 0; i < 8; i++) {
-            board.add(new ImageView(getClass().getResource("/Resources/whitePieces/whitePawn.png").toExternalForm()), i, 6);
+            board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                    "/Resources/whitePieces/whitePawn.png")).toExternalForm()), i, 6);
         }
-        board.add(new ImageView(getClass().getResource("/Resources/whitePieces/whiteRook.png").toExternalForm()), 0, 7);
-        board.add(new ImageView(getClass().getResource("/Resources/whitePieces/whiteKhight.png").toExternalForm()), 1, 7);
-        board.add(new ImageView(getClass().getResource("/Resources/whitePieces/whiteBishop.png").toExternalForm()), 2, 7);
-        board.add(new ImageView(getClass().getResource("/Resources/whitePieces/whiteKing.png").toExternalForm()), 3, 7);
-        board.add(new ImageView(getClass().getResource("/Resources/whitePieces/whiteQueen.png").toExternalForm()), 4, 7);
-        board.add(new ImageView(getClass().getResource("/Resources/whitePieces/whiteBishop.png").toExternalForm()), 5, 7);
-        board.add(new ImageView(getClass().getResource("/Resources/whitePieces/whiteKhight.png").toExternalForm()), 6, 7);
-        board.add(new ImageView(getClass().getResource("/Resources/whitePieces/whiteRook.png").toExternalForm()), 7, 7);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/whitePieces/whiteRook.png")).toExternalForm()), 0, 7);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/whitePieces/whiteKhight.png")).toExternalForm()), 1, 7);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/whitePieces/whiteBishop.png")).toExternalForm()), 2, 7);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/whitePieces/whiteKing.png")).toExternalForm()), 3, 7);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/whitePieces/whiteQueen.png")).toExternalForm()), 4, 7);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/whitePieces/whiteBishop.png")).toExternalForm()), 5, 7);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/whitePieces/whiteKhight.png")).toExternalForm()), 6, 7);
+        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                "/Resources/whitePieces/whiteRook.png")).toExternalForm()), 7, 7);
 
 
 
@@ -78,8 +101,8 @@ public class boardView extends Application {
     private HBox makeWhiteCap() {
         HBox whiteCap = new HBox();
 
-        BackgroundImage image = new BackgroundImage(new Image(getClass().getResource(
-                "/Resources/captured.png").toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+        BackgroundImage image = new BackgroundImage(new Image(Objects.requireNonNull(getClass().getResource(
+                "/Resources/captured.png")).toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER, new BackgroundSize(100, 740, false, false, true, false));
         whiteCap.setBackground(new Background(image));
         whiteCap.setPrefHeight(100);
@@ -92,8 +115,8 @@ public class boardView extends Application {
     private HBox makeBlackCap() {
         HBox blackCap = new HBox();
 
-        BackgroundImage image = new BackgroundImage(new Image(getClass().getResource(
-                "/Resources/captured.png").toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+        BackgroundImage image = new BackgroundImage(new Image(Objects.requireNonNull(getClass().getResource(
+                "/Resources/captured.png")).toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER, new BackgroundSize(100, 740, false, false, true, false));
         blackCap.setBackground(new Background(image));
         blackCap.setPrefHeight(100);
@@ -105,8 +128,8 @@ public class boardView extends Application {
     private VBox makePrevMoves() {
         VBox prevMove = new VBox();
 
-        BackgroundImage image = new BackgroundImage(new Image(getClass().getResource(
-                "/Resources/prevMove.png").toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+        BackgroundImage image = new BackgroundImage(new Image(Objects.requireNonNull(getClass().getResource(
+                "/Resources/prevMove.png")).toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER, new BackgroundSize(940, 200, false, false, true, false));
         prevMove.setBackground(new Background(image));
         prevMove.setPrefHeight(940);
@@ -114,19 +137,30 @@ public class boardView extends Application {
         return prevMove;
     }
 
+    public void removeNode(final int row, final int column) {
+
+        ObservableList<Node> childrens = board.getChildren();
+        for(Node node : childrens) {
+            if(node instanceof ImageView && board.getRowIndex(node) == row && board.getColumnIndex(node) == column) {
+                board.getChildren().remove(node);
+                break;
+            }
+        }
+    }
+
 
 
 
 //***********************************************************//
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
         BorderPane borderpane = new BorderPane();
         borderpane.setCenter(board);
         borderpane.setTop(whiteCap);
         borderpane.setBottom(blackCap);
 
-        ImageView imageView = new ImageView(getClass().getResource("/Resources/sidePiece.jpg").toExternalForm());
+        ImageView imageView = new ImageView(Objects.requireNonNull(getClass().getResource("/Resources/sidePiece.jpg")).toExternalForm());
         imageView.setFitWidth(15);
 
         HBox hBox = new HBox();
