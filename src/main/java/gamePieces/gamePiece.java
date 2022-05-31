@@ -1,24 +1,26 @@
 package gamePieces;
 
+import javafx.scene.image.ImageView;
 import boardGame.boardModel;
 
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-
 import java.util.ArrayList;
+import java.util.Objects;
 
 public abstract class gamePiece {
 
     private Coordinates currentPos;
 
-    private boardModel model;
+    private ArrayList<Coordinates> availableMoves;
+
+    public static boardModel model;
 
     public ImageView image;
 
+    /** true for white, false for black**/
     public boolean color;
 
     public gamePiece(boardModel model, Coordinates initCoor) {
-        this.model = model;
+        gamePiece.model = model;
         this.currentPos = initCoor;
     }
 
@@ -30,12 +32,13 @@ public abstract class gamePiece {
         this.currentPos = currentPos;
     }
 
-    public void setImage(ImageView image) {
-        this.image = image;
-
+    public ArrayList<Coordinates> getAvailableMoves() {
+        return availableMoves;
     }
 
-    abstract ArrayList<Coordinates> getAvailableMoves();
+    public void setAvailableMoves(ArrayList<Coordinates> moves) {this.availableMoves = moves;}
+
+    public abstract void generateMoves();
 
 
 }

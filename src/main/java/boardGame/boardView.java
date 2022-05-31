@@ -1,7 +1,11 @@
 package boardGame;
 
+
+import gamePieces.Coordinates;
+import gamePieces.gamePiece;
 import javafx.application.Application;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -10,25 +14,45 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+
+import java.util.ArrayList;
 import java.util.Objects;
 
-public class boardView extends Application {
+
+
+public class boardView extends Application  {
 
 //**************** Declaration of private states **************//
-    private HBox whiteCap = makeWhiteCap();
-
-    private HBox blackCap = makeBlackCap();
 
 
-    private GridPane board = makeBoard();
 
+    /** A box at the bottom of the screen to display what pieces White has captured */
+    private final HBox whiteCap = makeWhiteCap();
 
-    private VBox prevMoves = makePrevMoves();
+    /** A box at the top of the screen to display what pieces Black has captured */
+    private final HBox blackCap = makeBlackCap();
+
+    /** Makes the Chess board the game is played on */
+    private final GridPane board = makeBoard();
+
+    /** Makes the previous moves section that is to the right of the board */
+    private final VBox prevMoves = makePrevMoves();
+
+    /** The logic backend of the chessGame */
+    @FXML
+    private boardModel model;
+
+    
+
+    /** just an array of the 'same' imageview to make for easy removal off the grid pane */
+    private final ArrayList<ImageView> arrAvailMoves = buildAvailMoves();
+
 
 //***********************************************************//
 
 
 //********************** Styles the screen *******************//
+
     private GridPane makeBoard()  {
         GridPane board = new GridPane();
 
@@ -50,53 +74,13 @@ public class boardView extends Application {
 
         board.setPadding(new Insets(0, 0, 0, 7));
 
-        // Put pieces on board in initial positions
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/blackPieces/blackRook.png")).toExternalForm()), 0, 0);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/blackPieces/blackKhight.png")).toExternalForm()), 1, 0);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/blackPieces/blackBishop.png")).toExternalForm()), 2, 0);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/blackPieces/blackQueen.png")).toExternalForm()), 3, 0);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/blackPieces/blackKing.png")).toExternalForm()), 4, 0);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/blackPieces/blackBishop.png")).toExternalForm()), 5, 0);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/blackPieces/blackKhight.png")).toExternalForm()), 6, 0);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/blackpieces/blackRook.png")).toExternalForm()), 7, 0);
-        for (int i = 0; i < 8; i++) {
-            board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                    "/Resources/blackPieces/blackPawn.png")).toExternalForm()), i, 1);
-        }
-        for (int i = 0; i < 8; i++) {
-            board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                    "/Resources/whitePieces/whitePawn.png")).toExternalForm()), i, 6);
-        }
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/whitePieces/whiteRook.png")).toExternalForm()), 0, 7);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/whitePieces/whiteKhight.png")).toExternalForm()), 1, 7);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/whitePieces/whiteBishop.png")).toExternalForm()), 2, 7);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/whitePieces/whiteKing.png")).toExternalForm()), 3, 7);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/whitePieces/whiteQueen.png")).toExternalForm()), 4, 7);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/whitePieces/whiteBishop.png")).toExternalForm()), 5, 7);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/whitePieces/whiteKhight.png")).toExternalForm()), 6, 7);
-        board.add(new ImageView(Objects.requireNonNull(getClass().getResource(
-                "/Resources/whitePieces/whiteRook.png")).toExternalForm()), 7, 7);
+
+
 
 
 
         return board;
     }
-
 
     private HBox makeWhiteCap() {
         HBox whiteCap = new HBox();
@@ -137,32 +121,78 @@ public class boardView extends Application {
         return prevMove;
     }
 
-    public void removeNode(final int row, final int column) {
+    private void addPieces() {
+        for(int x = 0; x < 8; x++) {
+            for(int y = 0; y < 8; y++) {
+                if(model.map.containsKey(new Coordinates(x, y))) {
+                    board.add(model.map.get(new Coordinates(x, y)).image, y, x);
+                }
+            }
+        }
+    }
 
-        ObservableList<Node> childrens = board.getChildren();
-        for(Node node : childrens) {
-            if(node instanceof ImageView && board.getRowIndex(node) == row && board.getColumnIndex(node) == column) {
-                board.getChildren().remove(node);
-                break;
+    private ArrayList<ImageView> buildAvailMoves() {
+        ArrayList<ImageView> arr = new ArrayList<>();
+        for(int i = 0; i < 32; i++) {
+            arr.add(new ImageView(Objects.requireNonNull(getClass().getResource(
+                    "/Resources/availMove.png")).toExternalForm()));
+        }
+        return arr;
+    }
+
+
+
+//********************** Setting actions of pieces *****************//
+
+    private void addEvents() {
+        for(int x = 0; x < 8; x++) {
+            for(int y = 0; y < 8; y++) {
+                if(model.map.containsKey(new Coordinates(x, y))) {
+                    addMoves(model.map.get(new Coordinates(x, y)));
+                }
             }
         }
     }
 
 
+    private void addMoves(gamePiece gamePiece) {
+        gamePiece.generateMoves();
+        gamePiece.image.setOnMouseClicked(event -> {
+
+            for(ImageView view : arrAvailMoves) {
+                if(board.getChildren().contains(view)) {
+                        board.getChildren().remove(view);
+                }
+                else {
+                    break;
+                }
+            }
+
+            for (int i = 0; i < gamePiece.getAvailableMoves().size(); i++) {
+                board.add( arrAvailMoves.get(i),gamePiece.getAvailableMoves().get(i).col(),
+                        gamePiece.getAvailableMoves().get(i).row());
+            }
+
+        });
+    }
 
 
-//***********************************************************//
+
+
+
+
+//******************************Initialization**********************//
     @Override
     public void start(Stage stage) {
-
+        initializeModel();
+        addPieces();
+        addEvents();
         BorderPane borderpane = new BorderPane();
         borderpane.setCenter(board);
         borderpane.setTop(whiteCap);
         borderpane.setBottom(blackCap);
-
         ImageView imageView = new ImageView(Objects.requireNonNull(getClass().getResource("/Resources/sidePiece.jpg")).toExternalForm());
         imageView.setFitWidth(15);
-
         HBox hBox = new HBox();
         hBox.getChildren().addAll(imageView, borderpane, prevMoves);
         hBox.setPrefWidth(955);
@@ -171,5 +201,15 @@ public class boardView extends Application {
         stage.show();
     }
 
+
+
     public static void main(String[] args) {launch();}
+
+    @FXML
+    private void initializeModel() {
+        model = new boardModel();
+    }
+
+
+//*********************************************************//
 }
