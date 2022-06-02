@@ -42,7 +42,7 @@ public class boardView extends Application  {
     @FXML
     private boardModel model;
 
-    
+    private Coordinates selected;
 
     /** just an array of the 'same' imageview to make for easy removal off the grid pane */
     private final ArrayList<ImageView> arrAvailMoves = buildAvailMoves();
@@ -152,12 +152,17 @@ public class boardView extends Application  {
                 }
             }
         }
+        for(ImageView image : arrAvailMoves) {
+            addMoving(image);
+        }
     }
 
 
     private void addMoves(gamePiece gamePiece) {
         gamePiece.generateMoves();
         gamePiece.image.setOnMouseClicked(event -> {
+
+            selected = new Coordinates(GridPane.getRowIndex(gamePiece.image), GridPane.getColumnIndex(gamePiece.image));
 
             for(ImageView view : arrAvailMoves) {
                 if(board.getChildren().contains(view)) {
@@ -176,6 +181,13 @@ public class boardView extends Application  {
         });
     }
 
+    private void addMoving(ImageView imageView) {
+        imageView.setOnMouseClicked(event -> {
+            model.update(selected, new Coordinates(GridPane.getRowIndex(imageView),
+                    GridPane.getColumnIndex(imageView)));
+            refresh();
+        });
+    }
 
 
 
@@ -208,6 +220,18 @@ public class boardView extends Application  {
     @FXML
     private void initializeModel() {
         model = new boardModel();
+    }
+
+    private void refresh() {
+
+        board.getChildren().clear();
+        for(int x = 0; x < 8; x++) {
+            for(int y = 0; y < 8; y++) {
+                if(model.map.containsKey(new Coordinates(x, y))) {
+                    board.add(model.map.get(new Coordinates(x, y)).image, y, x);
+                }
+            }
+        }
     }
 
 

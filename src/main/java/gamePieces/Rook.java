@@ -23,64 +23,62 @@ public class Rook extends gamePiece{
     }
 
 
-    /**
-     * Generates the moves for the rook gamePiece, will add horizontal and vertical moves to
-     * the arraylist until it is met with a collision, upon said collision (checking the hashmap if it contains
-     * said coordinates). It will check if it can capture it or not.
-     */
+
     @Override
     public void generateMoves() {
         ArrayList<Coordinates> availableMoves = new ArrayList<>();
-        //creates the moves to the north of the rook
-        for(int i = getCurrentPos().row(); i >= 0; i--) {
-            if(model.map.containsKey(new Coordinates(i, getCurrentPos().col()))) {
-                if(model.map.get(new Coordinates(i, getCurrentPos().col())).color != this.color) {
-                    availableMoves.add(new Coordinates(i, getCurrentPos().col()));
-                }
-                break;
-            }
-            else {
-                availableMoves.add(new Coordinates(i, getCurrentPos().col()));
-            }
-        }
-        //creates the moves to the south of the rook
-        for(int i = getCurrentPos().row(); i < 8; i++) {
-            if(model.map.containsKey(new Coordinates(i, getCurrentPos().col()))) {
-                if(model.map.get(new Coordinates(i, getCurrentPos().col())).color != this.color) {
-                    availableMoves.add(new Coordinates(i, getCurrentPos().col()));
-                }
-                break;
-            }
-            else {
-                availableMoves.add(new Coordinates(i, getCurrentPos().col()));
-            }
-        }
-        //creates the moves to the east of the rook
-        for(int x = getCurrentPos().col(); x < 8; x++) {
-            if(model.map.containsKey(new Coordinates(getCurrentPos().row(), x))) {
-                if(model.map.get(new Coordinates(getCurrentPos().row(), x)).color != this.color) {
-                    availableMoves.add(new Coordinates(getCurrentPos().row(), x));
-                }
-                break;
-            }
-            else {
-                availableMoves.add(new Coordinates(getCurrentPos().row(), x));
-            }
-        }
-        //creates the moves to the west of the rook
-        for(int x = getCurrentPos().col(); x >= 0; x--) {
-            if(model.map.containsKey(new Coordinates(getCurrentPos().row(), x))) {
-                if(model.map.get(new Coordinates(getCurrentPos().row(), x)).color != this.color) {
-                    availableMoves.add(new Coordinates(getCurrentPos().row(), x));
-                }
-                break;
-            }
-            else {
-                availableMoves.add(new Coordinates(getCurrentPos().row(), x));
-            }
-        }
+        int x = getCurrentPos().col();
+        int y = getCurrentPos().row();
 
-       setAvailableMoves(availableMoves);
+        //adds move's to the north
+        int i = 1;
+        while (y - i >= 0) {
+            if(model.map.containsKey(new Coordinates(y- i, x))) {
+                if(model.map.get(new Coordinates(y - i, x)).color != this.color) {
+                    availableMoves.add(new Coordinates(y - i, x));
+                }
+                break;
+            }
+            availableMoves.add(new Coordinates(y - i, x));
+            i++;
+        }
+        //adds move's to the west
+        i = 1;
+        while (x - i >= 0) {
+            if(model.map.containsKey(new Coordinates(y, x - i))) {
+                if(model.map.get(new Coordinates(y, x - i)).color != this.color) {
+                    availableMoves.add(new Coordinates(y, x - i));
+                }
+                break;
+            }
+            availableMoves.add(new Coordinates(y, x - i));
+            i++;
+        }
+        //adds move's to the south
+        i = 1;
+        while(y + i < 8) {
+            if(model.map.containsKey(new Coordinates(y + i, x))) {
+                if(model.map.get(new Coordinates(y + i, x)).color != this.color) {
+                    availableMoves.add(new Coordinates(y + i, x));
+                }
+                break;
+            }
+            availableMoves.add(new Coordinates(y + i, x));
+            i++;
+        }
+        //adds move's to the east
+        i = 1;
+        while(x + i < 8) {
+            if(model.map.containsKey(new Coordinates(y, x + i))) {
+                if(model.map.get(new Coordinates(y, x + i)).color != this.color) {
+                    availableMoves.add(new Coordinates(y, x + i));
+                }
+                break;
+            }
+            availableMoves.add(new Coordinates(y, x + i));
+            i++;
+        }
+        setAvailableMoves(availableMoves);
     }
 
 

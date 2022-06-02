@@ -22,60 +22,60 @@ public class Queen extends gamePiece{
         }
     }
 
+
     @Override
     public void generateMoves() {
         ArrayList<Coordinates> availableMoves = new ArrayList<>();
-        //creates moves to the north of the queen
-        for(int i = getCurrentPos().row(); i >= 0; i--) {
-            if(model.map.containsKey(new Coordinates(i, getCurrentPos().col()))) {
-                if(model.map.get(new Coordinates(i, getCurrentPos().col())).color != this.color) {
-                    availableMoves.add(new Coordinates(i, getCurrentPos().col()));
-                }
-                break;
-            }
-            else {
-                availableMoves.add(new Coordinates(i, getCurrentPos().col()));
-            }
-        }
-        //creates the moves to the south of the queen
-        for(int i = getCurrentPos().row(); i < 8; i++) {
-            if(model.map.containsKey(new Coordinates(i, getCurrentPos().col()))) {
-                if(model.map.get(new Coordinates(i, getCurrentPos().col())).color != this.color) {
-                    availableMoves.add(new Coordinates(i, getCurrentPos().col()));
-                }
-                break;
-            }
-            else {
-                availableMoves.add(new Coordinates(i, getCurrentPos().col()));
-            }
-        }
-        //creates the moves to the east of the queen
-        for(int x = getCurrentPos().col(); x < 8; x++) {
-            if(model.map.containsKey(new Coordinates(getCurrentPos().row(), x))) {
-                if(model.map.get(new Coordinates(getCurrentPos().row(), x)).color != this.color) {
-                    availableMoves.add(new Coordinates(getCurrentPos().row(), x));
-                }
-                break;
-            }
-            else {
-                availableMoves.add(new Coordinates(getCurrentPos().row(), x));
-            }
-        }
-        //creates the moves to the west of the queen
-        for(int x = getCurrentPos().col(); x >= 0; x--) {
-            if(model.map.containsKey(new Coordinates(getCurrentPos().row(), x))) {
-                if(model.map.get(new Coordinates(getCurrentPos().row(), x)).color != this.color) {
-                    availableMoves.add(new Coordinates(getCurrentPos().row(), x));
-                }
-                break;
-            }
-            else {
-                availableMoves.add(new Coordinates(getCurrentPos().row(), x));
-            }
-        }
-
         int x = getCurrentPos().col();
         int y = getCurrentPos().row();
+
+        int i = 1;
+        while (y - i >= 0) {
+            if(model.map.containsKey(new Coordinates(y- i, x))) {
+                if(model.map.get(new Coordinates(y - i, x)).color != this.color) {
+                    availableMoves.add(new Coordinates(y - i, x));
+                }
+                break;
+            }
+            availableMoves.add(new Coordinates(y - i, x));
+            i++;
+        }
+        //adds move's to the west
+        i = 1;
+        while (x - i >= 0) {
+            if(model.map.containsKey(new Coordinates(y, x - i))) {
+                if(model.map.get(new Coordinates(y, x - i)).color != this.color) {
+                    availableMoves.add(new Coordinates(y, x - i));
+                }
+                break;
+            }
+            availableMoves.add(new Coordinates(y, x - i));
+            i++;
+        }
+        //adds move's to the south
+        i = 1;
+        while(y + i < 8) {
+            if(model.map.containsKey(new Coordinates(y + i, x))) {
+                if(model.map.get(new Coordinates(y + i, x)).color != this.color) {
+                    availableMoves.add(new Coordinates(y + i, x));
+                }
+                break;
+            }
+            availableMoves.add(new Coordinates(y + i, x));
+            i++;
+        }
+        //adds move's to the east
+        i = 1;
+        while(x + i < 8) {
+            if(model.map.containsKey(new Coordinates(y, x + i))) {
+                if(model.map.get(new Coordinates(y, x + i)).color != this.color) {
+                    availableMoves.add(new Coordinates(y, x + i));
+                }
+                break;
+            }
+            availableMoves.add(new Coordinates(y, x + i));
+            i++;
+        }
         // builds moves to northwest diagonally
         while (x >= 0 && y >= 0) {
             if(!new Coordinates(y, x).equals(getCurrentPos()) && model.map.containsKey(new Coordinates(y, x))) {

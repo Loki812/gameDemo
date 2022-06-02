@@ -47,6 +47,15 @@ public class boardModel  {
         map.put(new Coordinates(7, 6), new Khight(this, new Coordinates(7, 6)));
         map.put(new Coordinates(7, 7), new Rook(this, new Coordinates(7,7)));
     }
+
+    public void update(Coordinates old, Coordinates selected) {
+        gamePiece gamePiece = map.get(old);
+        gamePiece.setCurrentPos(selected);
+        map.remove(old);
+        map.put(selected, gamePiece);
+
+        map.forEach((key, value) -> (value).generateMoves());
+    }
 }
 
 
