@@ -10,6 +10,7 @@ public class Bishop extends gamePiece{
 
     public Bishop(boardModel model, Coordinates initCoor) {
         super(model, initCoor);
+        notation = 'B';
         if(initCoor.row() == 0) {
             color = false;
             image = new ImageView(Objects.requireNonNull(getClass().getResource(

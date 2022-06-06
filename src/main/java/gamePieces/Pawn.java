@@ -8,12 +8,11 @@ import javafx.scene.image.ImageView;
 
 public class Pawn extends gamePiece{
 
-    Coordinates intialPos;
+
 
     public Pawn(boardModel model, Coordinates initCoor) {
         super(model, initCoor);
-        intialPos = initCoor;
-
+        notation = '`';
         if(initCoor.row() == 1) {
             color = false;
             image = new ImageView(Objects.requireNonNull(getClass().getResource(
@@ -26,26 +25,62 @@ public class Pawn extends gamePiece{
         }
     }
 
-    //TODO: collision detection by using model
-    //TODO: capturing other pieces by using model data
+    //TODO include upgrading to queen etc
     @Override
     public void generateMoves() {
         ArrayList<Coordinates> availableMoves = new ArrayList<>();
+        int y = getCurrentPos().row();
+        int x = getCurrentPos().col();
+        if(!color) {
+            if (y == 1) {
+                if (!model.map.containsKey(new Coordinates(y + 1, x))) {
+                    availableMoves.add(new Coordinates(y + 1, x));
+                }
+                if (!model.map.containsKey(new Coordinates(y + 2, x))) {
+                    availableMoves.add(new Coordinates(y + 2, x));
+                }
+            }
+            else if (y != 7) {
+                if (!model.map.containsKey(new Coordinates(y + 1, x))) {
+                    availableMoves.add(new Coordinates(y + 1, x));
+                }
+            }
+            if(model.map.containsKey(new Coordinates(y + 1, x - 1))) {
+                if(model.map.get(new Coordinates(y + 1, x - 1)).color != this.color) {
+                    availableMoves.add(new Coordinates(y + 1, x - 1));
+                }
+            }
+            if(model.map.containsKey(new Coordinates(y + 1, x + 1))) {
+                if(model.map.get(new Coordinates(y + 1, x + 1)).color != this.color) {
+                    availableMoves.add(new Coordinates(y + 1, x + 1));
+                }
+            }
+        }
+        else {
+            if (y == 6) {
+                if (!model.map.containsKey(new Coordinates(y - 1, x))) {
+                    availableMoves.add(new Coordinates(y - 1, x));
+                }
+                if (!model.map.containsKey(new Coordinates(y - 2, x))) {
+                    availableMoves.add(new Coordinates(y - 2, x));
+                }
+            }
+            else if (y != 0) {
+                if (model.map.containsKey(new Coordinates(y - 1, x))) {
+                    availableMoves.add(new Coordinates(y - 1, x));
+                }
+            }
+            if(model.map.containsKey(new Coordinates(y - 1, x - 1))) {
+                if(model.map.get(new Coordinates(y - 1, x - 1)).color != this.color) {
+                    availableMoves.add(new Coordinates(y - 1, x - 1));
+                }
+            }
+            if(model.map.containsKey(new Coordinates(y - 1, x + 1))) {
+                if(model.map.get(new Coordinates(y - 1, x + 1)).color != this.color) {
+                    availableMoves.add(new Coordinates(y - 1, x + 1));
+                }
+            }
 
-        if(!color && getCurrentPos().row() == 1) {
-            availableMoves.add(new Coordinates(2, getCurrentPos().col()));
-            availableMoves.add(new Coordinates(3, getCurrentPos().col()));
-        }
-        //TODO include upgrading to queen etc
-        else if(!color && getCurrentPos().row() != 7) {
-            availableMoves.add(new Coordinates(getCurrentPos().row() + 1, getCurrentPos().col()));
-        }
-        else if(color && getCurrentPos().row() == 6) {
-            availableMoves.add(new Coordinates(5, getCurrentPos().col()));
-            availableMoves.add(new Coordinates(4, getCurrentPos().col()));
-        }
-        else if (color && getCurrentPos().row() != 0) {
-            availableMoves.add(new Coordinates(getCurrentPos().row() - 1, getCurrentPos().col()));
         }
         setAvailableMoves(availableMoves);
     }

@@ -16,6 +16,8 @@ public abstract class gamePiece {
 
     public ImageView image;
 
+    public char notation;
+
     /** true for white, false for black**/
     public boolean color;
 

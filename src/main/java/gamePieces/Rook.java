@@ -29,7 +29,7 @@ public class Rook extends gamePiece{
         ArrayList<Coordinates> availableMoves = new ArrayList<>();
         int x = getCurrentPos().col();
         int y = getCurrentPos().row();
-
+        notation = 'R';
         //adds move's to the north
         int i = 1;
         while (y - i >= 0) {

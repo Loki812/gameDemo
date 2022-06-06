@@ -4,11 +4,10 @@ package boardGame;
 import gamePieces.Coordinates;
 import gamePieces.gamePiece;
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -27,16 +26,18 @@ public class boardView extends Application  {
 
 
     /** A box at the bottom of the screen to display what pieces White has captured */
-    private final HBox whiteCap = makeWhiteCap();
+    public final HBox whiteCap = makeWhiteCap();
 
     /** A box at the top of the screen to display what pieces Black has captured */
-    private final HBox blackCap = makeBlackCap();
+    public final HBox blackCap = makeBlackCap();
 
     /** Makes the Chess board the game is played on */
     private final GridPane board = makeBoard();
 
     /** Makes the previous moves section that is to the right of the board */
-    private final VBox prevMoves = makePrevMoves();
+    public GridPane prevMoves = makePrevMoves();
+
+
 
     /** The logic backend of the chessGame */
     @FXML
@@ -92,6 +93,8 @@ public class boardView extends Application  {
         whiteCap.setPrefHeight(100);
         whiteCap.setPrefWidth(740);
 
+        whiteCap.setPadding(new Insets(20, 0, 0, 10));
+        whiteCap.setSpacing(0);
         return whiteCap;
     }
 
@@ -105,19 +108,25 @@ public class boardView extends Application  {
         blackCap.setBackground(new Background(image));
         blackCap.setPrefHeight(100);
         blackCap.setPrefWidth(740);
+        blackCap.setPadding(new Insets(20, 0, 0, 10));
+        blackCap.setSpacing(0);
         return blackCap;
     }
 
 
-    private VBox makePrevMoves() {
-        VBox prevMove = new VBox();
-
+    private GridPane makePrevMoves() {
+        GridPane prevMove = new GridPane();
         BackgroundImage image = new BackgroundImage(new Image(Objects.requireNonNull(getClass().getResource(
                 "/Resources/prevMove.png")).toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER, new BackgroundSize(940, 200, false, false, true, false));
         prevMove.setBackground(new Background(image));
         prevMove.setPrefHeight(940);
         prevMove.setPrefWidth(200);
+        prevMove.setHgap(50);
+        for(int i = 0; i < 10; i ++) {
+            prevMove.getRowConstraints().add(new RowConstraints(92));
+        }
+        prevMove.setPadding(new Insets(0, 0, 0, 50));
         return prevMove;
     }
 
@@ -185,8 +194,9 @@ public class boardView extends Application  {
         imageView.setOnMouseClicked(event -> {
             model.update(selected, new Coordinates(GridPane.getRowIndex(imageView),
                     GridPane.getColumnIndex(imageView)));
-            refresh();
         });
+
+        imageView.setOpacity(.5);
     }
 
 
@@ -219,11 +229,10 @@ public class boardView extends Application  {
 
     @FXML
     private void initializeModel() {
-        model = new boardModel();
+        model = new boardModel(this);
     }
 
-    private void refresh() {
-
+    public void refresh() {
         board.getChildren().clear();
         for(int x = 0; x < 8; x++) {
             for(int y = 0; y < 8; y++) {
