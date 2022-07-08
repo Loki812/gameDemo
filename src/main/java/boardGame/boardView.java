@@ -7,10 +7,12 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Label;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 
@@ -87,7 +89,7 @@ public class boardView extends Application  {
         HBox whiteCap = new HBox();
 
         BackgroundImage image = new BackgroundImage(new Image(Objects.requireNonNull(getClass().getResource(
-                "/Resources/captured.png")).toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                "/Resources/blackCap.png")).toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER, new BackgroundSize(100, 740, false, false, true, false));
         whiteCap.setBackground(new Background(image));
         whiteCap.setPrefHeight(100);
@@ -103,7 +105,7 @@ public class boardView extends Application  {
         HBox blackCap = new HBox();
 
         BackgroundImage image = new BackgroundImage(new Image(Objects.requireNonNull(getClass().getResource(
-                "/Resources/captured.png")).toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                "/Resources/whiteCap.png")).toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER, new BackgroundSize(100, 740, false, false, true, false));
         blackCap.setBackground(new Background(image));
         blackCap.setPrefHeight(100);
@@ -124,9 +126,9 @@ public class boardView extends Application  {
         prevMove.setPrefWidth(200);
         prevMove.setHgap(50);
         for(int i = 0; i < 10; i ++) {
-            prevMove.getRowConstraints().add(new RowConstraints(92));
+            prevMove.getRowConstraints().add(new RowConstraints(40));
         }
-        prevMove.setPadding(new Insets(0, 0, 0, 50));
+        prevMove.setPadding(new Insets(50, 0, 0, 50));
         return prevMove;
     }
 
@@ -149,7 +151,14 @@ public class boardView extends Application  {
         return arr;
     }
 
-
+    private Label createPrevMoveLabel(String s) {
+        Label l = new Label(s);
+        l.setScaleX(2);
+        l.setScaleY(2);
+        l.autosize();
+        l.setFont(Font.font("Calibri"));
+        return l;
+    }
 
 //********************** Setting actions of pieces *****************//
 
@@ -163,12 +172,12 @@ public class boardView extends Application  {
         }
         for(ImageView image : arrAvailMoves) {
             addMoving(image);
+
         }
     }
 
 
     private void addMoves(gamePiece gamePiece) {
-        gamePiece.generateMoves();
         gamePiece.image.setOnMouseClicked(event -> {
 
             selected = new Coordinates(GridPane.getRowIndex(gamePiece.image), GridPane.getColumnIndex(gamePiece.image));
@@ -195,7 +204,6 @@ public class boardView extends Application  {
             model.update(selected, new Coordinates(GridPane.getRowIndex(imageView),
                     GridPane.getColumnIndex(imageView)));
         });
-
         imageView.setOpacity(.5);
     }
 
@@ -213,7 +221,7 @@ public class boardView extends Application  {
         borderpane.setCenter(board);
         borderpane.setTop(whiteCap);
         borderpane.setBottom(blackCap);
-        ImageView imageView = new ImageView(Objects.requireNonNull(getClass().getResource("/Resources/sidePiece.jpg")).toExternalForm());
+        ImageView imageView = new ImageView(Objects.requireNonNull(getClass().getResource("/Resources/sidePiece.png")).toExternalForm());
         imageView.setFitWidth(15);
         HBox hBox = new HBox();
         hBox.getChildren().addAll(imageView, borderpane, prevMoves);
@@ -241,6 +249,28 @@ public class boardView extends Application  {
                 }
             }
         }
+        prevMoves.getChildren().clear();
+        int x = 0;
+        int y = 0;
+        for(String s : model.disPrevMoves) {
+            prevMoves.add(createPrevMoveLabel(s), x, y);
+            if(x == 1) {
+                x = 0;
+                y++;
+            }
+            else {
+                x++;
+            }
+        }
+        whiteCap.getChildren().clear();
+        blackCap.getChildren().clear();
+        for(gamePiece g : model.getWhiteCapPieces()) {
+            whiteCap.getChildren().add(g.image);
+        }
+        for(gamePiece g : model.getBlackCapPieces()) {
+            blackCap.getChildren().add(g.image);
+        }
+
     }
 
 

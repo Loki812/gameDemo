@@ -114,6 +114,7 @@ public class King extends gamePiece{
                 availableMoves.add(new Coordinates(y + 1, x + 1));
             }
         }
+
         setAvailableMoves(availableMoves);
     }
 

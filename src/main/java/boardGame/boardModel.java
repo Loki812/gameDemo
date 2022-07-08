@@ -1,44 +1,87 @@
 package boardGame;
 
-import com.sun.javafx.scene.control.LabeledText;
+
 import gamePieces.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 
+import java.awt.*;
 import java.util.*;
 
 
 public class boardModel  {
 
+    //*** States of the model ***//
 
+    /**
+     * The blueprint of the chess board, maps coordinates on the board to gamePiece objects.
+     *
+     * ex. Coordinate (0,0) -> Black Rook
+     */
     public HashMap<Coordinates, gamePiece> map = new HashMap<>();
 
-    private HashMap<Integer, Character> notationMap = new HashMap<>();
+    /**
+     * Used to 'link' the model and view
+     * so the model can call the view's refresh() function
+     *
+     * *also added linking for the display of previous moves*
+     */
     private final boardView view;
 
-    private ArrayList<String> disPrevMoves = new ArrayList<>();
+    /** Just used for creating move names ex. column 0 -> 'a' column */
+    private final HashMap<Integer, Character> notationMap = new HashMap<>();
 
-    private enum gameState {
-        WHITEMOVE,
-        BLACKMOVE,
-        WHITECHECK,
-        BLACKCHECK,
-        GAMEOVER;
+    /** Displays the previous moves by players dynamically, so when it reaches move ~20, it will remove
+     * the oldest moves from the array.
+     *
+     * - This should later be changed, so it does not remove Strings past twenty, by implementing a scrollPane -
+     */
+    public final ArrayList<String> disPrevMoves = new ArrayList<>();
+
+    private final ArrayList<gamePiece> whiteCapPieces = new ArrayList<>();
+
+    private final ArrayList<gamePiece> blackCapPieces = new ArrayList<>();
+
+
+    /**
+     * True for white, false for black
+     */
+    private boolean state;
+
+
+    public ArrayList<gamePiece> getWhiteCapPieces() {
+        return whiteCapPieces;
     }
-    gameState state;
+
+    public ArrayList<gamePiece> getBlackCapPieces() {
+        return blackCapPieces;
+    }
 
 
+    //**************************************//
 
     public boardModel(boardView view) {
         loadData();
-        state = gameState.BLACKMOVE;
+        state = true;
+        for(gamePiece g : map.values()) {
+            if(g.color == state) {
+                g.generateMoves();
+            }
+        }
+
         this.view = view;
     }
 
+    //*** Functions of the model ***//
 
+    /**
+     * Fills the map and notationMap state with (Key, Value) pairs.
+     *
+     * is called @FXML, so it gets called before the app initializes
+     */
     @FXML
     private void loadData() {
         //Black pieces
@@ -79,6 +122,19 @@ public class boardModel  {
 
     }
 
+    /**
+     * Called when a played clicks on one of the opaque 'available move' buttons
+     * on the screen. After doing so a few things happen,
+     *
+     * 1. The previous moves board to the right adds on the move chosen by the player
+     *
+     * 2. It edits the map state to reflect the changed board
+     *
+     * 3. It changes the state of the game so that the other players moves are generated
+     *
+     * @param old The coordinates of the gamePiece object selected
+     * @param selected The coordinates of the availableMove that the player selected
+     */
     public void update(Coordinates old, Coordinates selected) {
         updatePrevMoves(old, selected);
         //deals with the possibility of a capture//
@@ -88,31 +144,116 @@ public class boardModel  {
         gamePiece.setCurrentPos(selected);
         map.remove(old);
         map.put(selected, gamePiece);
-        view.refresh();
-        //***************************//
-        if(state == gameState.WHITEMOVE) {
-            for (gamePiece g : map.values()) {
-                if (g.color) {
-                    g.generateMoves();
-                } else {
-                    g.setAvailableMoves(new ArrayList<>());
-                }
-            }
-            state = gameState.BLACKMOVE;
+        //new code goes here
+        if(checkForCheck()) {
+            map.remove(selected);
+            map.put(old, gamePiece);
+            gamePiece.setCurrentPos(old);
         }
-        else if(state == gameState.BLACKMOVE) {
-            for (gamePiece g : map.values()) {
-                if (!g.color) {
-                    g.generateMoves();
-                } else {
+        else {
+            view.refresh();
+            if(checkForGameOver()) {
+                if(state) {
+                    view.blackCap.getChildren().clear();
+                    Text winText = new Text("White Wins!!!");
+                    winText.setFont(new Font("Impact", 50));
+                    view.blackCap.getChildren().add(winText);
+                }
+                else {
+                    view.whiteCap.getChildren().clear();
+                    Text winText = new Text("Black Wins!!!");
+                    winText.setFont(new Font("Impact", 50));
+                    view.whiteCap.getChildren().add(winText);
+                }
+                for(gamePiece g : map.values()) {
                     g.setAvailableMoves(new ArrayList<>());
                 }
             }
-            state = gameState.WHITEMOVE;
+            else {
+                state = !state;
+                for (gamePiece g : map.values()) {
+                    if (g.color == state) {
+                        g.generateMoves();
+                    } else {
+                        g.setAvailableMoves(new ArrayList<>());
+                    }
+                }
+            }
         }
     }
 
 
+
+    private Coordinates getKingsCoordinates() {
+        boolean color = state;
+
+        for(gamePiece g : map.values()) {
+            if(g instanceof King && g.color == color) {
+                return g.getCurrentPos();
+            }
+        }
+        return null;
+    }
+
+    private Coordinates getOppKingsCoordinates() {
+        boolean color = !state;
+
+        for(gamePiece g : map.values()) {
+            if(g instanceof King && g.color == color) {
+                return g.getCurrentPos();
+            }
+        }
+        return null;
+    }
+
+    private boolean checkForCheck() {
+        boolean color = state;
+        Coordinates kingsCoor = getKingsCoordinates();
+        for(gamePiece g : map.values()) {
+            if(g.color != color) {
+                g.generateMoves();
+                for(Coordinates c : g.getAvailableMoves()) {
+                    if(c.equals(kingsCoor)) {
+
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkForOppCheck() {
+        boolean color = !state;
+        Coordinates kingsCoor = getOppKingsCoordinates();
+        for(gamePiece g : map.values()) {
+            if(g.color != color) {
+                g.generateMoves();
+                for(Coordinates c : g.getAvailableMoves()) {
+                    if(c.equals(kingsCoor)) {
+
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Starts off by creating a StringBuilder object to store the move name,
+     * then accesses the gamePiece objects notation state,
+     * then checks if it is capturing another piece by seeing if the model.map contains the selected coordinate,
+     * then runs the column number of the old Coordinate through the notationMap to get a letter a-h
+     * then takes 8 minus the row number.
+     *
+     * You should end up with a string like Bc6, or Nc5, or e4, or Qxe5
+     *
+     * lastly it adds it to the arraylist of disPrevMoves.
+     * @param old The coordinates of the gamePiece that was selected by the player
+     * @param selected The coordinates of the available move that was selected by the player
+     */
     private void updatePrevMoves(Coordinates old, Coordinates selected) {
         StringBuilder builder = new StringBuilder();
         gamePiece game = map.get(old);
@@ -126,32 +267,14 @@ public class boardModel  {
         builder.append(8 - selected.row());
         disPrevMoves.add(builder.toString());
 
-        //***** actually changes the view to display the previous moves *****//
-        view.prevMoves.getChildren().clear();
-        int x = 0;
-        int y = 0;
-        for(String s : disPrevMoves) {
-            view.prevMoves.add(createPrevMoveLabel(s), x, y);
-            if(x == 1) {
-                x = 0;
-                y++;
-            }
-            else {
-                x++;
-            }
-        }
-
     }
 
-    private Label createPrevMoveLabel(String s) {
-        Label l = new Label(s);
-        l.setScaleX(2);
-        l.setScaleY(2);
-        l.autosize();
-        l.setFont(Font.font("Impact"));
-        return l;
-    }
 
+    /**All moves are passed through this function, if a piece is captured during this move
+     * it updates the model.map and then places the piece in the blackCap or whiteCap depending on
+     * the color of the piece
+     *
+     */
     private void captured(Coordinates c) {
         if(map.containsKey(c)) {
             gamePiece game = map.get(c);
@@ -160,15 +283,40 @@ public class boardModel  {
             game.image.setFitHeight(50);
             map.remove(c);
             if(game.color) {
-                view.whiteCap.getChildren().add(game.image);
+                whiteCapPieces.add(game);
             }
             else {
-                view.blackCap.getChildren().add(game.image);
+                blackCapPieces.add(game);
             }
         }
     }
+
+
+    public boolean checkForGameOver() {
+       gamePiece king = map.get(getOppKingsCoordinates());
+       king.generateMoves();
+       Coordinates oldPos = king.getCurrentPos();
+       if(king.getAvailableMoves().size() == 0) {
+           return checkForOppCheck();
+       }
+       else {
+           for (Coordinates c : king.getAvailableMoves()) {
+               map.remove(oldPos);
+               map.put(c, king);
+               king.setCurrentPos(c);
+               if (!checkForOppCheck()) {
+                   map.remove(c);
+                   map.put(oldPos, king);
+                   king.setCurrentPos(oldPos);
+                   return false;
+               }
+               map.remove(c);
+               map.put(oldPos, king);
+               king.setCurrentPos(oldPos);
+           }
+           return true;
+       }
+    }
+    //*****************************//
 }
-
-
-
 

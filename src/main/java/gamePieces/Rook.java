@@ -78,6 +78,7 @@ public class Rook extends gamePiece{
             availableMoves.add(new Coordinates(y, x + i));
             i++;
         }
+
         setAvailableMoves(availableMoves);
     }
 

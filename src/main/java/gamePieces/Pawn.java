@@ -32,56 +32,49 @@ public class Pawn extends gamePiece{
         int y = getCurrentPos().row();
         int x = getCurrentPos().col();
         if(!color) {
-            if (y == 1) {
-                if (!model.map.containsKey(new Coordinates(y + 1, x))) {
-                    availableMoves.add(new Coordinates(y + 1, x));
-                }
+            if (y == 1 && !model.map.containsKey(new Coordinates(y + 1, x))) {
+                availableMoves.add(new Coordinates(y + 1, x));
                 if (!model.map.containsKey(new Coordinates(y + 2, x))) {
                     availableMoves.add(new Coordinates(y + 2, x));
                 }
             }
-            else if (y != 7) {
-                if (!model.map.containsKey(new Coordinates(y + 1, x))) {
-                    availableMoves.add(new Coordinates(y + 1, x));
-                }
+            else if (!model.map.containsKey(new Coordinates(y + 1, x)) && y <= 7) {
+                availableMoves.add(new Coordinates(y + 1, x));
             }
-            if(model.map.containsKey(new Coordinates(y + 1, x - 1))) {
-                if(model.map.get(new Coordinates(y + 1, x - 1)).color != this.color) {
+            if (model.map.containsKey(new Coordinates(y + 1, x - 1))) {
+                if (model.map.get(new Coordinates(y + 1, x - 1)).color) {
                     availableMoves.add(new Coordinates(y + 1, x - 1));
                 }
             }
-            if(model.map.containsKey(new Coordinates(y + 1, x + 1))) {
-                if(model.map.get(new Coordinates(y + 1, x + 1)).color != this.color) {
+            if (model.map.containsKey(new Coordinates(y + 1, x + 1))) {
+                if (model.map.get(new Coordinates(y + 1, x + 1)).color) {
                     availableMoves.add(new Coordinates(y + 1, x + 1));
                 }
             }
         }
         else {
-            if (y == 6) {
-                if (!model.map.containsKey(new Coordinates(y - 1, x))) {
-                    availableMoves.add(new Coordinates(y - 1, x));
-                }
-                if (!model.map.containsKey(new Coordinates(y - 2, x))) {
+            if(y == 6 && !model.map.containsKey(new Coordinates(y - 1, x))) {
+                availableMoves.add(new Coordinates(y - 1, x));
+                if(!model.map.containsKey(new Coordinates(y - 2, x))) {
                     availableMoves.add(new Coordinates(y - 2, x));
                 }
             }
-            else if (y != 0) {
-                if (model.map.containsKey(new Coordinates(y - 1, x))) {
-                    availableMoves.add(new Coordinates(y - 1, x));
-                }
+            else if(!model.map.containsKey(new Coordinates(y - 1, x)) && y >= 0) {
+                availableMoves.add(new Coordinates(y - 1, x));
             }
-            if(model.map.containsKey(new Coordinates(y - 1, x - 1))) {
-                if(model.map.get(new Coordinates(y - 1, x - 1)).color != this.color) {
+
+            if (model.map.containsKey(new Coordinates(y - 1, x - 1))) {
+                if (!model.map.get(new Coordinates(y - 1, x - 1)).color) {
                     availableMoves.add(new Coordinates(y - 1, x - 1));
                 }
             }
-            if(model.map.containsKey(new Coordinates(y - 1, x + 1))) {
-                if(model.map.get(new Coordinates(y - 1, x + 1)).color != this.color) {
+            if (model.map.containsKey(new Coordinates(y - 1, x + 1))) {
+                if (!model.map.get(new Coordinates(y - 1, x + 1)).color) {
                     availableMoves.add(new Coordinates(y - 1, x + 1));
                 }
             }
-
         }
+
         setAvailableMoves(availableMoves);
     }
 }

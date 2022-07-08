@@ -20,4 +20,12 @@ public record Coordinates( int row, int col )
         if ( result == 0 ) result = this.col - o.col;
         return result;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Coordinates) {
+            return ((Coordinates) o).col == this.col && ((Coordinates) o).row == this.row;
+        }
+        return false;
+    }
 }

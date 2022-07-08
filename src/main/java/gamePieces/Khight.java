@@ -108,6 +108,9 @@ public class Khight extends gamePiece{
                 availableMoves.add(new Coordinates(y - 1, x - 2));
             }
         }
+
+
+
         setAvailableMoves(availableMoves);
     }
 

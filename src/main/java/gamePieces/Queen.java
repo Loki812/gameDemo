@@ -140,6 +140,7 @@ public class Queen extends gamePiece{
             y++;
         }
         availableMoves.remove(getCurrentPos());
+
         setAvailableMoves(availableMoves);
     }
 }
