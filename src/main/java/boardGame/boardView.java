@@ -3,6 +3,7 @@ package boardGame;
 
 import gamePieces.Coordinates;
 import gamePieces.gamePiece;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -14,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 
 import java.util.ArrayList;
@@ -29,6 +31,8 @@ public class boardView extends Application  {
 
     /** A box at the bottom of the screen to display what pieces White has captured */
     public final HBox whiteCap = makeWhiteCap();
+
+    public final ImageView AIbutton = makeAiButton();
 
     /** A box at the top of the screen to display what pieces Black has captured */
     public final HBox blackCap = makeBlackCap();
@@ -49,6 +53,7 @@ public class boardView extends Application  {
 
     /** just an array of the 'same' imageview to make for easy removal off the grid pane */
     private final ArrayList<ImageView> arrAvailMoves = buildAvailMoves();
+
 
 
 //***********************************************************//
@@ -90,14 +95,21 @@ public class boardView extends Application  {
 
         BackgroundImage image = new BackgroundImage(new Image(Objects.requireNonNull(getClass().getResource(
                 "/Resources/blackCap.png")).toExternalForm()), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.CENTER, new BackgroundSize(100, 740, false, false, true, false));
+                BackgroundPosition.CENTER, new BackgroundSize(100, 540, false, false, true, false));
         whiteCap.setBackground(new Background(image));
         whiteCap.setPrefHeight(100);
-        whiteCap.setPrefWidth(740);
+        whiteCap.setPrefWidth(540);
 
         whiteCap.setPadding(new Insets(20, 0, 0, 10));
         whiteCap.setSpacing(0);
         return whiteCap;
+    }
+
+    private ImageView makeAiButton() {
+        ImageView image = new ImageView(new Image(Objects.requireNonNull(getClass().getResource(
+                "/Resources/AIOffButton.png")).toExternalForm()));
+
+        return image;
     }
 
 
@@ -124,6 +136,8 @@ public class boardView extends Application  {
         prevMove.setBackground(new Background(image));
         prevMove.setPrefHeight(940);
         prevMove.setPrefWidth(200);
+        prevMove.setMinWidth(200);
+        prevMove.setMinHeight(940);
         prevMove.setHgap(50);
         for(int i = 0; i < 10; i ++) {
             prevMove.getRowConstraints().add(new RowConstraints(40));
@@ -159,6 +173,8 @@ public class boardView extends Application  {
         l.setFont(Font.font("Calibri"));
         return l;
     }
+
+
 
 //********************** Setting actions of pieces *****************//
 
@@ -219,7 +235,10 @@ public class boardView extends Application  {
         addEvents();
         BorderPane borderpane = new BorderPane();
         borderpane.setCenter(board);
-        borderpane.setTop(whiteCap);
+        HBox veryTop = new HBox();
+        veryTop.getChildren().add(whiteCap);
+        veryTop.getChildren().add(AIbutton);
+        borderpane.setTop(veryTop);
         borderpane.setBottom(blackCap);
         ImageView imageView = new ImageView(Objects.requireNonNull(getClass().getResource("/Resources/sidePiece.png")).toExternalForm());
         imageView.setFitWidth(15);
@@ -228,6 +247,7 @@ public class boardView extends Application  {
         hBox.setPrefWidth(955);
         Scene scene = new Scene(hBox);
         stage.setScene(scene);
+        stage.setTitle("Chess experiment");
         stage.show();
     }
 
@@ -264,8 +284,8 @@ public class boardView extends Application  {
         }
         whiteCap.getChildren().clear();
         blackCap.getChildren().clear();
-        for(gamePiece g : model.getWhiteCapPieces()) {
-            whiteCap.getChildren().add(g.image);
+        for(int i = 0; i < model.getWhiteCapPieces().size(); i++) {
+            whiteCap.getChildren().add(model.getWhiteCapPieces().get(i).image);
         }
         for(gamePiece g : model.getBlackCapPieces()) {
             blackCap.getChildren().add(g.image);
