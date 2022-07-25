@@ -13,6 +13,7 @@ public class Pawn extends gamePiece{
     public Pawn(boardModel model, Coordinates initCoor) {
         super(model, initCoor);
         notation = '`';
+        pointValue = 1;
         if(initCoor.row() == 1) {
             color = false;
             image = new ImageView(Objects.requireNonNull(getClass().getResource(

@@ -10,6 +10,8 @@ public class Rook extends gamePiece{
 
     public Rook(boardModel model, Coordinates initCoor) {
         super(model, initCoor);
+        pointValue = 5;
+        notation = 'R';
         if(initCoor.row() == 0) {
             color = false;
             image = new ImageView(Objects.requireNonNull(getClass().getResource(

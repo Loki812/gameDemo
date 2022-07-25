@@ -55,6 +55,8 @@ public abstract class gamePiece {
     /** true for white, false for black**/
     public boolean color;
 
+    public int pointValue;
+
     /**
      *
      * @param model The backend to the gamePiece
@@ -81,5 +83,8 @@ public abstract class gamePiece {
 
     //TODO make all of the implementations look at the gameState, create check moves dependent on that
     public abstract void generateMoves();
+
+    //TODO
+    public  abstract gamePiece copyPiece();
 
 }

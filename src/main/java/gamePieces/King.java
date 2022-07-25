@@ -12,6 +12,7 @@ public class King extends gamePiece{
     public King(boardModel model, Coordinates initCoor) {
         super(model, initCoor);
         notation = 'K';
+        pointValue = 10;
         if(initCoor.row() == 0) {
             color = false;
             image = new ImageView(Objects.requireNonNull(getClass().getResource(

@@ -4,11 +4,8 @@ package boardGame;
 import gamePieces.*;
 import javafx.fxml.FXML;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-
-import java.awt.*;
 import java.util.*;
 
 
@@ -45,13 +42,6 @@ public class boardModel  {
 
     private final ArrayList<gamePiece> blackCapPieces = new ArrayList<>();
 
-
-    /**
-     * True for white, false for black
-     */
-    private boolean state;
-
-
     public ArrayList<gamePiece> getWhiteCapPieces() {
         return whiteCapPieces;
     }
@@ -59,6 +49,13 @@ public class boardModel  {
     public ArrayList<gamePiece> getBlackCapPieces() {
         return blackCapPieces;
     }
+
+    /**
+     * True for white, false for black
+     */
+    private boolean state;
+
+    private boolean isGameOver = false;
 
 
     //**************************************//
@@ -144,8 +141,7 @@ public class boardModel  {
         gamePiece.setCurrentPos(selected);
         map.remove(old);
         map.put(selected, gamePiece);
-        //new code goes here
-        if(checkForCheck()) {
+        if(checkForCheck(true)) {
             map.remove(selected);
             map.put(old, gamePiece);
             gamePiece.setCurrentPos(old);
@@ -184,8 +180,14 @@ public class boardModel  {
 
 
 
-    private Coordinates getKingsCoordinates() {
-        boolean color = state;
+    private Coordinates getKingsCoordinates(boolean colorOf) {
+        boolean color;
+        if(colorOf) {
+            color = state;
+        }
+        else {
+            color = !state;
+        }
 
         for(gamePiece g : map.values()) {
             if(g instanceof King && g.color == color) {
@@ -195,20 +197,17 @@ public class boardModel  {
         return null;
     }
 
-    private Coordinates getOppKingsCoordinates() {
-        boolean color = !state;
 
-        for(gamePiece g : map.values()) {
-            if(g instanceof King && g.color == color) {
-                return g.getCurrentPos();
-            }
+    private boolean checkForCheck(boolean colorOf) {
+        boolean color;
+        if(colorOf) {
+            color = state;
         }
-        return null;
-    }
+        else {
+            color =!state;
+        }
 
-    private boolean checkForCheck() {
-        boolean color = state;
-        Coordinates kingsCoor = getKingsCoordinates();
+        Coordinates kingsCoor = getKingsCoordinates(color);
         for(gamePiece g : map.values()) {
             if(g.color != color) {
                 g.generateMoves();
@@ -223,22 +222,6 @@ public class boardModel  {
         return false;
     }
 
-    private boolean checkForOppCheck() {
-        boolean color = !state;
-        Coordinates kingsCoor = getOppKingsCoordinates();
-        for(gamePiece g : map.values()) {
-            if(g.color != color) {
-                g.generateMoves();
-                for(Coordinates c : g.getAvailableMoves()) {
-                    if(c.equals(kingsCoor)) {
-
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
 
 
     /**
@@ -293,18 +276,18 @@ public class boardModel  {
 
 
     public boolean checkForGameOver() {
-       gamePiece king = map.get(getOppKingsCoordinates());
+       gamePiece king = map.get(getKingsCoordinates(false));
        king.generateMoves();
        Coordinates oldPos = king.getCurrentPos();
        if(king.getAvailableMoves().size() == 0) {
-           return checkForOppCheck();
+           return checkForCheck(false);
        }
        else {
            for (Coordinates c : king.getAvailableMoves()) {
                map.remove(oldPos);
                map.put(c, king);
                king.setCurrentPos(c);
-               if (!checkForOppCheck()) {
+               if (!checkForCheck(false)) {
                    map.remove(c);
                    map.put(oldPos, king);
                    king.setCurrentPos(oldPos);
@@ -314,6 +297,7 @@ public class boardModel  {
                map.put(oldPos, king);
                king.setCurrentPos(oldPos);
            }
+           isGameOver = true;
            return true;
        }
     }

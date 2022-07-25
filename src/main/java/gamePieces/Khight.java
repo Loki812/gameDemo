@@ -10,6 +10,7 @@ public class Khight extends gamePiece{
     public Khight(boardModel model, Coordinates initCoor) {
         super(model, initCoor);
         notation = 'N';
+        pointValue = 3;
         if(initCoor.row() == 0) {
             color = false;
             image = new ImageView(Objects.requireNonNull(getClass().getResource(
